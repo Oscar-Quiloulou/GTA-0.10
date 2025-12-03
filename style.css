@@ -1,0 +1,148 @@
+:root {
+  --bg: #0b1220;
+  --panel: #0f1720;
+  --accent: #ffd166;
+  --btn: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: linear-gradient(180deg, #071018, #0b1b2a);
+  color: #e6eef8;
+}
+
+#app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 22px;
+}
+
+.hud {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hud > div, .hud button {
+  background: var(--panel);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#game-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #08121a;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg);
+}
+
+#touch-controls {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+}
+
+.ctl {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 22px;
+  touch-action: none;
+}
+
+#minimap {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 150px;
+  height: 112px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.hidden {
+  display: none;
+}
+
+.panel {
+  background: var(--panel);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+footer {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+}
+
+/* Responsive */
+@media (min-width: 900px) {
+  #touch-controls {
+    display: none; /* hide touch buttons on desktop */
+  }
+}
+
+@media (max-width: 899px) {
+  h1 {
+    font-size: 18px;
+  }
+  .hud {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .hud > div, .hud button {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  #touch-controls {
+    gap: 4px;
+    padding: 4px;
+  }
+  .ctl {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  #minimap {
+    width: 120px;
+    height: 90px;
+    padding: 4px;
+  }
+}

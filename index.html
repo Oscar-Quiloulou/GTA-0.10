@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MiniGTA - Monde Ouvert</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>MiniGTA</h1>
+      <div class="hud">
+        <div id="speed">Vitesse: 0</div>
+        <div id="pos">X:0 Y:0</div>
+        <div id="checkpoint">CP: 0 / 0</div>
+        <button id="saveBtn">Sauvegarder</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <main>
+      <div id="game-wrap">
+        <canvas id="game"></canvas>
+        <div id="touch-controls">
+          <button class="ctl" id="leftBtn">◀</button>
+          <button class="ctl" id="rightBtn">▶</button>
+          <button class="ctl" id="accelBtn">▲</button>
+          <button class="ctl" id="brakeBtn">▼</button>
+        </div>
+        <div id="minimap"></div>
+      </div>
+    </main>
+
+    <div id="overlay" class="hidden">
+      <div class="panel">
+        <h2 id="ov-title">Paused</h2>
+        <p id="ov-msg"></p>
+        <button id="ov-close">Reprendre</button>
+      </div>
+    </div>
+
+    <footer>
+      <small>Prototype - Déployable sur GitHub Pages</small>
+    </footer>
+  </div>
+
+<script src="game.js"></script>
+</body>
+</html>
