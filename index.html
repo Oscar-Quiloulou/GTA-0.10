@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>MiniGTA - Monde Ouvert</title>
+  <title>MiniGTA 3D - Monde Ouvert</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
     <header>
-      <h1>MiniGTA</h1>
+      <h1>MiniGTA 3D</h1>
       <div class="hud">
         <div id="speed">Vitesse: 0</div>
-        <div id="pos">X:0 Y:0</div>
+        <div id="pos">X:0 Y:0 Z:0</div>
         <div id="checkpoint">CP: 0 / 0</div>
         <button id="saveBtn">Sauvegarder</button>
         <button id="resetBtn">Reset</button>
@@ -21,7 +21,7 @@
 
     <main>
       <div id="game-wrap">
-        <canvas id="game"></canvas>
+        <!-- Three.js canvas sera injecté par le renderer -->
         <div id="touch-controls">
           <button class="ctl" id="leftBtn">◀</button>
           <button class="ctl" id="rightBtn">▶</button>
@@ -41,10 +41,11 @@
     </div>
 
     <footer>
-      <small>Prototype - Déployable sur GitHub Pages</small>
+      <small>Prototype 3D - Déployable sur GitHub Pages</small>
     </footer>
   </div>
 
-<script src="game.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.min.js"></script>
+  <script src="game3d.js"></script>
 </body>
 </html>
