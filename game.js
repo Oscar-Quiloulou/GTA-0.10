@@ -1,4 +1,4 @@
-// game.js — MiniGTA prototype amélioré (minimap + PNJ + collisions stables)
+// game.js — MiniGTA prototype amélioré (minimap + PNJ + compatibilité iPad)
 (() => {
   // --- Canvas setup ---
   const canvas = document.getElementById('game');
@@ -17,12 +17,13 @@
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   }
   window.addEventListener('resize', fitCanvas);
+  window.addEventListener('load', fitCanvas);
   fitCanvas();
 
   // --- DOM elements ---
   const speedEl = document.getElementById('speed');
   const posEl = document.getElementById('pos');
-  const cpEl = document.getElementById('checkpoint'); // réservé pour prochaine feature
+  const cpEl = document.getElementById('checkpoint');
   const saveBtn = document.getElementById('saveBtn');
   const resetBtn = document.getElementById('resetBtn');
   const overlay = document.getElementById('overlay');
@@ -43,12 +44,19 @@
     if (e.key === 'ArrowUp') input.accel = false;
     if (e.key === 'ArrowDown') input.brake = false;
   });
+
+  // Touch buttons (iPad/Safari safe)
   function bindBtn(btn, key) {
     if (!btn) return;
-    btn.addEventListener('pointerdown', e => { e.preventDefault(); input[key] = true; });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev =>
-      btn.addEventListener(ev, e => { e.preventDefault(); input[key] = false; })
-    );
+    const down = e => { e.preventDefault(); input[key] = true; };
+    const up = e => { e.preventDefault(); input[key] = false; };
+    btn.addEventListener('pointerdown', down);
+    btn.addEventListener('pointerup', up);
+    btn.addEventListener('pointercancel', up);
+    btn.addEventListener('pointerleave', up);
+    btn.addEventListener('touchstart', down, { passive: false });
+    btn.addEventListener('touchend', up, { passive: false });
+    btn.addEventListener('touchcancel', up, { passive: false });
   }
   bindBtn(document.getElementById('leftBtn'), 'left');
   bindBtn(document.getElementById('rightBtn'), 'right');
@@ -73,11 +81,11 @@
       for (let y = 0; y < MAP_H; y++) map[index(x, y)] = 1;
     // walls
     for (let i = 0; i < 50; i++) {
-      const x = Math.floor(Math.random() * (MAP_W - 3));
-      const y = Math.floor(Math.random() * (MAP_H - 3));
+      const wx = Math.floor(Math.random() * (MAP_W - 3));
+      const wy = Math.floor(Math.random() * (MAP_H - 3));
       for (let yy = 0; yy < 2; yy++)
         for (let xx = 0; xx < 2; xx++)
-          map[index(x + xx, y + yy)] = 2;
+          map[index(wx + xx, wy + yy)] = 2;
     }
   }
   generateMap();
@@ -85,16 +93,10 @@
   // --- Camera & player ---
   const cam = { x: MAP_W * TILE / 2, y: MAP_H * TILE / 2 };
   const player = {
-    x: cam.x + 50,
-    y: cam.y + 50,
-    angle: 0,
-    w: 42, h: 22,
-    vx: 0, vy: 0,
-    maxSpeed: 300,
-    accel: 400,
-    brake: 700,
-    steerSpeed: 3.5,
-    grip: 6
+    x: cam.x + 50, y: cam.y + 50, angle: 0,
+    w: 42, h: 22, vx: 0, vy: 0,
+    maxSpeed: 300, accel: 400, brake: 700,
+    steerSpeed: 3.5, grip: 6
   };
 
   // --- NPCs ---
@@ -107,12 +109,9 @@
   }));
   function updateNPCs(dt) {
     for (const n of npcs) {
-      // avance
       n.x += Math.cos(n.angle) * n.speed * dt;
       n.y += Math.sin(n.angle) * n.speed * dt;
-      // si hors route, tourne
       if (tileAtWorld(n.x, n.y) !== 1) n.angle += Math.PI / 2;
-      // petites limites monde
       n.x = Math.max(0, Math.min(MAP_W * TILE, n.x));
       n.y = Math.max(0, Math.min(MAP_H * TILE, n.y));
     }
@@ -134,7 +133,7 @@
     return map[index(tx, ty)];
   }
 
-  // SAT simplifié: tentative séparée X/Y pour éviter l’intrusion dans les murs
+  // collisions rect vs tiles (coins)
   function rectTouchesWall(cx, cy, w, h) {
     const halfW = w / 2, halfH = h / 2;
     const points = [
@@ -149,40 +148,32 @@
     return false;
   }
 
+  // déplacement avec tentative séparée X/Y
   function tryMove(entity, dx, dy) {
-    // X
     const nx = entity.x + dx;
     if (!rectTouchesWall(nx, entity.y, entity.w, entity.h)) {
       entity.x = nx;
     } else {
-      // amorti en cas de choc sur X
       entity.vx *= -0.2;
     }
-    // Y
     const ny = entity.y + dy;
     if (!rectTouchesWall(entity.x, ny, entity.w, entity.h)) {
       entity.y = ny;
     } else {
       entity.vy *= -0.2;
     }
-    // bornes monde
     entity.x = clamp(entity.x, entity.w / 2, MAP_W * TILE - entity.w / 2);
     entity.y = clamp(entity.y, entity.h / 2, MAP_H * TILE - entity.h / 2);
   }
 
   // --- Pause / overlay ---
   let paused = false;
-  function togglePause() {
-    paused = !paused;
-    overlay.classList.toggle('hidden', !paused);
-  }
+  function togglePause() { paused = !paused; overlay.classList.toggle('hidden', !paused); }
   ovClose.addEventListener('click', togglePause);
 
   // --- Save / load ---
   function saveGame() {
-    const data = {
-      player: { x: player.x, y: player.y, angle: player.angle, vx: player.vx, vy: player.vy }
-    };
+    const data = { player: { x: player.x, y: player.y, angle: player.angle, vx: player.vx, vy: player.vy } };
     localStorage.setItem('minigta_save', JSON.stringify(data));
     alert('Sauvegardé !');
   }
@@ -197,14 +188,11 @@
     }
   }
   saveBtn.addEventListener('click', saveGame);
-  resetBtn.addEventListener('click', () => {
-    localStorage.removeItem('minigta_save');
-    location.reload();
-  });
+  resetBtn.addEventListener('click', () => { localStorage.removeItem('minigta_save'); location.reload(); });
 
   // --- Minimap ---
   const miniCanvas = document.createElement('canvas');
-  miniCanvas.width = 220; // un peu plus large
+  miniCanvas.width = 220;
   miniCanvas.height = 160;
   minimapEl.appendChild(miniCanvas);
   const miniCtx = miniCanvas.getContext('2d');
@@ -212,7 +200,6 @@
   function drawMinimap() {
     miniCtx.fillStyle = '#0b0b0b';
     miniCtx.fillRect(0, 0, miniCanvas.width, miniCanvas.height);
-
     const worldW = MAP_W * TILE;
     const worldH = MAP_H * TILE;
     const scaleX = miniCanvas.width / worldW;
@@ -243,7 +230,6 @@
   // --- Game loop ---
   let lastTs = performance.now();
   function update(dt) {
-    // direction avant selon angle
     const fdx = Math.cos(player.angle);
     const fdy = Math.sin(player.angle);
 
@@ -268,7 +254,7 @@
       player.vx *= s; player.vy *= s;
     }
 
-    // déplacement avec collisions stables
+    // déplacement + collisions
     tryMove(player, player.vx * dt, player.vy * dt);
 
     // caméra fluide
