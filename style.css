@@ -52,7 +52,8 @@ h1 {
 #game-wrap {
   position: relative;
   border-radius: 12px;
-  overflow: hidden;
+  /* ⚠️ Safari masquait les boutons avec overflow:hidden */
+  overflow: visible;
   background: #08121a;
 }
 
@@ -65,11 +66,13 @@ canvas {
 
 #touch-controls {
   position: absolute;
-  left: 8px;
-  bottom: 8px;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
   display: flex;
-  gap: 8px;
-  padding: 6px;
+  gap: 12px;
+  padding: 8px;
+  z-index: 1000; /* force au-dessus du canvas */
 }
 
 .ctl {
@@ -77,10 +80,11 @@ canvas {
   height: 56px;
   border-radius: 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
-  font-size: 22px;
-  touch-action: none;
+  font-size: 24px;
+  touch-action: manipulation; /* plus compatible iOS */
+  -webkit-user-select: none;  /* empêche la sélection de texte */
 }
 
 #minimap {
@@ -132,8 +136,8 @@ footer {
     font-size: 12px;
   }
   #touch-controls {
-    gap: 4px;
-    padding: 4px;
+    gap: 6px;
+    padding: 6px;
   }
   .ctl {
     width: 48px;
