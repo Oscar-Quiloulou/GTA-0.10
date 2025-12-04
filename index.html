@@ -45,7 +45,13 @@
     </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.min.js"></script>
+  <!-- ✅ Charger Three.js r149 (avant la dépréciation) -->
+  <script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+
+  <!-- ✅ Charger GLTFLoader compatible avec r149 -->
+  <script src="https://unpkg.com/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <!-- ✅ Ton script du jeu -->
   <script src="game3d.js"></script>
 </body>
 </html>
