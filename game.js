@@ -95,7 +95,7 @@
   const player = {
     x: cam.x + 50, y: cam.y + 50, angle: 0,
     w: 42, h: 22, vx: 0, vy: 0,
-    maxSpeed: 300, accel: 400, brake: 700,
+    maxSpeed: 300, accel: 600, brake: 700,
     steerSpeed: 3.5, grip: 6
   };
 
@@ -105,7 +105,7 @@
     y: Math.random() * MAP_H * TILE,
     w: 20, h: 20,
     angle: Math.random() * Math.PI * 2,
-    speed: 55
+    speed: 100
   }));
   function updateNPCs(dt) {
     for (const n of npcs) {
