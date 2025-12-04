@@ -83,8 +83,8 @@ canvas {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
   font-size: 24px;
-  touch-action: manipulation; /* plus compatible iOS */
-  -webkit-user-select: none;  /* empêche la sélection de texte */
+  touch-action: manipulation;   /* plus compatible iOS */
+  -webkit-user-select: none;    /* empêche le menu de sélection */
 }
 
 #minimap {
