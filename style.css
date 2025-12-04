@@ -52,8 +52,7 @@ h1 {
 #game-wrap {
   position: relative;
   border-radius: 12px;
-  /* ⚠️ Safari masquait les boutons avec overflow:hidden */
-  overflow: visible;
+  overflow: visible; /* pour Safari iPad */
   background: #08121a;
 }
 
@@ -69,10 +68,10 @@ canvas {
   left: 50%;
   bottom: 12px;
   transform: translateX(-50%);
-  display: flex;
+  display: flex; /* toujours affiché */
   gap: 12px;
   padding: 8px;
-  z-index: 1000; /* force au-dessus du canvas */
+  z-index: 1000; /* au-dessus du canvas */
 }
 
 .ctl {
@@ -83,8 +82,8 @@ canvas {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
   font-size: 24px;
-  touch-action: manipulation;   /* plus compatible iOS */
-  -webkit-user-select: none;    /* empêche le menu de sélection */
+  touch-action: manipulation;
+  -webkit-user-select: none;
 }
 
 #minimap {
@@ -116,13 +115,7 @@ footer {
   color: #888;
 }
 
-/* Responsive */
-@media (min-width: 900px) {
-  #touch-controls {
-    display: none; /* hide touch buttons on desktop */
-  }
-}
-
+/* Responsive tweaks (mais on ne cache plus les boutons) */
 @media (max-width: 899px) {
   h1 {
     font-size: 18px;
